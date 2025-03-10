@@ -8,7 +8,7 @@ import {
 import { operators } from '@/utils/constants';
 import { Switch } from './ui/switch';
 
-export function OperatorsList() {
+export function AbsenceList() {
   return (
     <Table>
       <TableHeader>
@@ -23,7 +23,7 @@ export function OperatorsList() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {operators.map((op, key: number) => (
+        {operators.concat(operators).map((op, key: number) => (
           <TableRow key={key}>
             <TableHead>{op.fullName}</TableHead>
             <TableHead>{op.contractType}</TableHead>
