@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Famille {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  lignes Ligne[]
+  Postes Poste[]
+}
+
+model Ligne {
+  id        Int     @id @default(autoincrement())
+  name      String  //@unique
+  familleId Int
+  famille   Famille @relation(fields: [familleId], references: [id])
+  Postes    Poste[]
+}
+
+model Poste {
+  id         Int      @id @default(autoincrement())
+  name       String   //@unique
+  isCritical Boolean
+  familleId  Int
+  ligneId    Int?
+  Famille    Famille  @relation(fields: [familleId], references: [id])
+  Ligne      Ligne?   @relation(fields: [ligneId], references: [id])
+  Operateurs Operateur[]
+}
+
+model Operateur {
+  id          Int    @id @default(autoincrement())
+  nom         String
+  prenom      String
+  isPolyvalent Boolean
+  posteId     Int
+  poste       Poste  @relation(fields: [posteId], references: [id])
+}

@@ -1,5 +1,14 @@
-import { redirect } from 'next/navigation';
+import { prisma } from "@/db/prisma"
 
-export default function Home() {
-  return redirect('/operators');
+export default async function Home() {
+
+  const operateurs  = await prisma.operateur.findMany();
+
+
+
+  return <div>
+    {operateurs.map((op, key) => (
+      <p key={key}>{op.nom} {op.posteId}</p>
+    ))}
+  </div>
 }
