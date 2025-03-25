@@ -1,7 +1,5 @@
 'use client';
 
-import type React from 'react';
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,34 +21,52 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
+import { usePostes } from '@/services/dropdowns.service';
+import { Switch } from '@/components/ui/switch';
+import { CreateOperateurDTO, OperateurIF } from '@/utils/types';
+import { useCreateOperateur } from '@/services/operators.service';
+import { useToast } from '@/hooks/use-toast';
 
-// Sample positions array - replace with your actual data
-const positions = ['Développeur', 'Designer', 'Chef de projet', 'Consultant'];
 
 export default function AddOperatorForm() {
+  const { data: postes, isSuccess } = usePostes();
+  const { mutateAsync: CreateOperator, isPending } = useCreateOperateur();
+  const { toast } = useToast();
+
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: '',
-    contractType: 'CDI',
-    position: positions[0],
-    formatrice: '',
-    famille: '',
-    ville: '',
+  const [formData, setFormData] = useState<CreateOperateurDTO>({
+    nom: '',
+    prenom: '',
+    isPolyvalent: false,
+    posteId: 1,
   });
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSelectChange = (field: string, value: string) => {
+  const handleSelectChange = (field: keyof OperateurIF, value: string | boolean | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setOpen(false);
+    CreateOperator(formData).then(() => {
+      toast({
+        title: "Success",
+        description: "Operateur ajouté avec success!",
+        color: "green"
+      })
+    })
+    .catch((error: {error: string, description: string}) => {
+      toast({
+        title: "Erreur",
+        description: error.error,
+        color: "red"
+      })
+    })
   };
 
   return (
@@ -63,105 +79,61 @@ export default function AddOperatorForm() {
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Informations de l employé</DialogTitle>
+            <DialogTitle>Informations de l`&apos;`employé</DialogTitle>
             <DialogDescription>
-              Remplissez les informations de l employé ci-dessous.
+              Remplissez les informations de l`&apos;`employé ci-dessous.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="fullName" className="text-right">
-                Nom complet
+              <Label htmlFor="nom" className="text-right">
+                Nom
               </Label>
-              <Input
-                id="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="col-span-3"
-                required
-              />
+              <Input id="nom" value={formData.nom} onChange={handleChange} className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="contractType" className="text-right">
-                Type de contrat
+              <Label htmlFor="prenom" className="text-right">
+                Prénom
               </Label>
-              <Select
-                value={formData.contractType}
-                onValueChange={(value) =>
-                  handleSelectChange('contractType', value)
-                }
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Sélectionner un type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CDI">CDI</SelectItem>
-                  <SelectItem value="CDD">CDD</SelectItem>
-                  <SelectItem value="Intérim">Intérim</SelectItem>
-                  <SelectItem value="Stage">Stage</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input id="prenom" value={formData.prenom} onChange={handleChange} className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="position" className="text-right">
+              <Label htmlFor="posteId" className="text-right">
                 Poste
               </Label>
-              <Select
-                value={formData.position}
-                onValueChange={(value) => handleSelectChange('position', value)}
-              >
+              <Select value={String(formData.posteId)} onValueChange={(value) => handleSelectChange('posteId', Number(value))}>
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Sélectionner un poste" />
                 </SelectTrigger>
                 <SelectContent>
-                  {positions.map((position) => (
-                    <SelectItem key={position} value={position}>
-                      {position}
+                  {isSuccess && postes.map((poste) => (
+                    <SelectItem key={poste.id} value={String(poste.id)}>
+                      {poste.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="formatrice" className="text-right">
-                Équipe
+              <Label htmlFor="isPolyvalent" className="text-right">
+                Polyvalent
               </Label>
-              <Input
-                id="formatrice"
-                value={formData.formatrice}
-                onChange={handleChange}
-                placeholder="ex: équipe 5"
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="famille" className="text-right">
-                Famille
-              </Label>
-              <Input
-                id="famille"
-                value={formData.famille}
-                onChange={handleChange}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="ville" className="text-right">
-                Ville
-              </Label>
-              <Input
-                id="ville"
-                value={formData.ville}
-                onChange={handleChange}
+              <Switch
+                id="isPolyvalent"
+                checked={formData.isPolyvalent}
+                onCheckedChange={(checked) => handleSelectChange('isPolyvalent', checked)}
                 className="col-span-3"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Enregistrer</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 }
+

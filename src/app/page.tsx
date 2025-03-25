@@ -1,14 +1,6 @@
-import { prisma } from "@/db/prisma"
+import { paths } from '@/utils/paths';
+import { redirect } from 'next/navigation';
 
 export default async function Home() {
-
-  const operateurs  = await prisma.operateur.findMany();
-
-
-
-  return <div>
-    {operateurs.map((op, key) => (
-      <p key={key}>{op.nom} {op.posteId}</p>
-    ))}
-  </div>
+  return redirect(paths.operators);
 }
