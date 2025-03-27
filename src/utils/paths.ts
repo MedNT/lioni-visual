@@ -1,12 +1,15 @@
-export const paths = {
-  operators: "/operators",
-  absence: "/absence",
-  postes: "/postes"
+export const clientPaths = {
+  home: '/',
+  operators: '/operators',
+  absences: '/absences',
+  postes: '/postes',
 } as const;
 
-const BASE_PATH =  `http://localhost:3000/api`;
+const BASE_PATH = `http://localhost:3000/api`;
 
 export const apiPaths = {
   postes: () => `${BASE_PATH}/postes`,
-  operators: () => `${BASE_PATH}/operators`
-}
+  operators: () => `${BASE_PATH}/operators`,
+  operatorsCount: () => `${BASE_PATH}/operators/count`,
+  absences: () => `${BASE_PATH}/absences`,
+} as const;

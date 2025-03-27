@@ -22,7 +22,7 @@ model Famille {
 
 model Ligne {
   id        Int     @id @default(autoincrement())
-  name      String  //@unique
+  name      String  
   familleId Int
   famille   Famille @relation(fields: [familleId], references: [id])
   Postes    Poste[]
@@ -30,7 +30,7 @@ model Ligne {
 
 model Poste {
   id         Int      @id @default(autoincrement())
-  name       String   //@unique
+  name       String   
   isCritical Boolean
   familleId  Int
   ligneId    Int?
@@ -46,4 +46,15 @@ model Operateur {
   isPolyvalent Boolean
   posteId     Int
   poste       Poste  @relation(fields: [posteId], references: [id])
+  absences  Absence[]
+}
+
+model Absence {
+  id          Int      @id @default(autoincrement())
+  operatorId  Int
+  date        String   //Store date as ISO string
+  reason      String
+  
+  operator    Operateur @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  @@unique([operatorId, date])
 }

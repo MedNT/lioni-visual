@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { clientPaths } from '@/utils/paths';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function Navbar() {
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         {/* Logo on the left */}
         <div className="flex items-center">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={clientPaths.home} className="flex items-center gap-2">
             <Image src="/leoni.png" alt="Logo" width={100} height={32} />
           </Link>
         </div>
@@ -34,38 +35,38 @@ export default function Navbar() {
         <div className="hidden md:flex md:items-center md:gap-10">
           <div className="space-y-2">
             <Link
-              href="/operators"
+              href={clientPaths.operators}
               className={clsx(
                 'flex gap-2 items-center text-sm font-medium transition-colors hover:text-primary'
               )}
             >
               <Users /> Gestion d’operateurs
             </Link>
-            {pathname.endsWith('operators') && (
+            {pathname.endsWith(clientPaths.operators) && (
               <div className="w-full h-1 bg-black rounded-md"></div>
             )}
           </div>
 
           <div className="space-y-2">
             <Link
-              href="/absence"
+              href={clientPaths.absences}
               className="flex gap-2 items-center text-sm font-medium transition-colors hover:text-primary"
             >
               <ListTodo /> Gestion d’absence
             </Link>
-            {pathname.endsWith('absence') && (
+            {pathname.endsWith(clientPaths.absences) && (
               <div className="w-full h-1 bg-black rounded-md"></div>
             )}
           </div>
 
           <div className="space-y-2">
             <Link
-              href="/postes"
+              href={clientPaths.postes}
               className="flex gap-2 items-center text-sm font-medium transition-colors hover:text-primary"
             >
               <ChartPie /> Etats des Postes
             </Link>
-            {pathname.endsWith('postes') && (
+            {pathname.endsWith(clientPaths.postes) && (
               <div className="w-full h-1 bg-black rounded-md"></div>
             )}
           </div>

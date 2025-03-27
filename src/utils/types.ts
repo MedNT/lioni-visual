@@ -33,7 +33,6 @@ interface OperateurIF {
   poste: PosteIF;
 }
 
-
 interface CreateOperateurDTO {
   nom: string;
   prenom: string;
@@ -41,11 +40,26 @@ interface CreateOperateurDTO {
   posteId: number;
 }
 
+interface AbsenceIF {
+  id: number;
+  operatorId: number;
+  date: string; // Format: YYYY-MM-DD
+  reason: string; // e.g., "Sick Leave", "Vacation", "Personal"
+  operator?: OperateurIF;
+}
+
+interface AbsenceCreateIF {
+  operatorId: number;
+  date: string;
+  reason: string;
+}
 
 export type {
   OperateurIF,
   PosteIF,
   LigneIF,
   FamilleIF,
+  AbsenceIF,
+  AbsenceCreateIF,
   CreateOperateurDTO
 }

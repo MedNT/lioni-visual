@@ -12,7 +12,7 @@ function Card({
   return ( 
     <div className="border border-[#DDD] p-4 rounded-md space-y-5 w-fit shadow-sm">
       <div className="flex gap-4 items-center">
-        <Users />
+        <Users size={32} />
         <p className="font-semibold">{title}</p>
       </div>
       <p className="font-bold text-4xl">{value}</p>
